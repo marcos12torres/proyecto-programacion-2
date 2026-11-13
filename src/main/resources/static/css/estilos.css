@@ -1,0 +1,37 @@
+/* Estilos propios que complementan a Bootstrap.
+   Colores tomados de proyecto-mvc (#243447 y #1755a6). */
+
+/* Fondo general de todas las páginas. */
+body {
+    background-color: #f4f6f8;
+    color: #243447;
+}
+
+/* Barra de navegación con el color oscuro del proyecto de referencia. */
+.barra {
+    background-color: #243447;
+}
+
+/* Botón principal con el azul del proyecto de referencia. */
+.btn-primary {
+    --bs-btn-bg: #1755a6;
+    --bs-btn-border-color: #1755a6;
+    --bs-btn-hover-bg: #103d78;
+    --bs-btn-hover-border-color: #103d78;
+}
+
+/* Limita el ancho de los formularios para que sean más legibles. */
+.formulario {
+    max-width: 760px;
+}
+
+/* Las tablas con fondo blanco y bordes redondeados. */
+.table {
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+/* Filas alternadas más suaves que el gris por defecto. */
+tbody tr:nth-child(even) {
+    background-color: #f7f9fb;
+}

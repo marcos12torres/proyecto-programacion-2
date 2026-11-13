@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Pacientes')}"></head>
+<body>
+
+    <header th:replace="~{fragments/header :: encabezado}"></header>
+
+    <main class="container py-4">
+
+        <div th:replace="~{fragments/header :: mensajes}"></div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h3 mb-0">Pacientes</h1>
+            <a class="btn btn-primary" th:href="@{/pacientes/nuevo}">+ Registrar paciente</a>
+        </div>
+
+        <!-- Búsqueda: envía GET /pacientes?buscar=... -->
+        <form class="row g-2 mb-3" th:action="@{/pacientes}" method="get">
+            <div class="col-sm-8 col-md-6">
+                <input type="search" name="buscar" class="form-control"
+                       placeholder="Buscar por apellido, nombre o DNI"
+                       th:value="${buscar}">
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-outline-primary" type="submit">Buscar</button>
+                <a class="btn btn-outline-secondary" th:href="@{/pacientes}">Limpiar</a>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle bg-white shadow-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>Apellido y nombre</th>
+                        <th>DNI</th>
+                        <th>Obra social</th>
+                        <th>Teléfono</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- th:each repite la fila por cada paciente de la lista del modelo. -->
+                    <tr th:each="p : ${pacientes}">
+                        <td th:text="${p.nombreCompleto}">Pérez, Ana</td>
+                        <td th:text="${p.dni}">30111222</td>
+                        <td th:text="${p.obraSocial}">OSDE</td>
+                        <td th:text="${p.telefono} ?: '-'">-</td>
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-outline-primary" th:href="@{/pacientes/{id}(id=${p.id})}">Ver ficha</a>
+                            <a class="btn btn-sm btn-outline-secondary" th:href="@{/pacientes/{id}/editar(id=${p.id})}">Modificar</a>
+                            <form class="d-inline" method="post"
+                                  th:action="@{/pacientes/{id}/eliminar(id=${p.id})}"
+                                  onsubmit="return confirm('¿Eliminar este paciente? Si tiene turnos se dará de baja y se cancelarán sus turnos futuros.');">
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(pacientes)}">
+                        <td colspan="5" class="text-center text-muted py-4">
+                            No se encontraron pacientes.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <th:block th:replace="~{fragments/header :: scripts}"></th:block>
+</body>
+</html>

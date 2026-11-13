@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Asignar turno')}"></head>
+<body>
+
+    <header th:replace="~{fragments/header :: encabezado}"></header>
+
+    <main class="container py-4">
+
+        <h1 class="h3 mb-3">Asignar turno</h1>
+
+        <div th:replace="~{fragments/header :: mensajes}"></div>
+
+        <!-- Si no hay pacientes o médicos activos no se puede asignar un turno. -->
+        <div th:if="${#lists.isEmpty(pacientes) or #lists.isEmpty(medicos)}" class="alert alert-warning">
+            Para asignar un turno primero tiene que haber al menos un
+            <a th:href="@{/pacientes/nuevo}">paciente</a> y un
+            <a th:href="@{/medicos/nuevo}">médico</a> registrados.
+        </div>
+
+        <form class="card card-body shadow-sm formulario" th:action="@{/turnos}" th:object="${turno}" method="post">
+
+            <div class="row g-3">
+                <!-- Relaciones: se elige el paciente y el médico (se envían sus ids). -->
+                <div class="col-md-6">
+                    <label for="pacienteId" class="form-label">Paciente *</label>
+                    <select id="pacienteId" name="pacienteId" class="form-select" required>
+                        <option value="">Seleccione un paciente</option>
+                        <option th:each="p : ${pacientes}" th:value="${p.id}"
+                                th:text="${p.nombreCompleto} + ' - DNI ' + ${p.dni}"
+                                th:selected="${p.id == pacienteId}">Pérez, Ana</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="medicoId" class="form-label">Médico *</label>
+                    <select id="medicoId" name="medicoId" class="form-select" required>
+                        <option value="">Seleccione un médico</option>
+                        <option th:each="m : ${medicos}" th:value="${m.id}"
+                                th:text="${m.nombreCompleto} + ' (' + ${m.especialidad} + ')'"
+                                th:selected="${m.id == medicoId}">Gómez, Luis</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="fecha" class="form-label">Fecha *</label>
+                    <input type="date" id="fecha" class="form-control" th:field="*{fecha}"
+                           th:attr="min=${hoy}" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="hora" class="form-label">Hora *</label>
+                    <!-- step=1800 segundos: intervalos de 30 minutos. -->
+                    <input type="time" id="hora" class="form-control" th:field="*{hora}"
+                           min="08:00" max="19:30" step="1800" required>
+                    <div class="form-text">De 08:00 a 19:30, cada 30 minutos. Lunes a sábado.</div>
+                </div>
+                <div class="col-md-4">
+                    <label for="tipo" class="form-label">Tipo *</label>
+                    <select id="tipo" class="form-select" th:field="*{tipo}" required>
+                        <option value="">Seleccione</option>
+                        <option th:each="t : ${tipos}" th:value="${t}" th:text="${t.descripcion}">Consulta</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <label for="descripcion" class="form-label">Descripción / motivo</label>
+                    <input type="text" id="descripcion" class="form-control" th:field="*{descripcion}"
+                           maxlength="255" placeholder="Ej.: control anual, dolor de cabeza...">
+                </div>
+            </div>
+
+            <p class="small text-muted mt-3 mb-2">* Campos obligatorios</p>
+
+            <div>
+                <button class="btn btn-success" type="submit">Asignar turno</button>
+                <a class="btn btn-outline-secondary" th:href="@{/turnos}">Cancelar</a>
+            </div>
+        </form>
+    </main>
+
+    <th:block th:replace="~{fragments/header :: scripts}"></th:block>
+</body>
+</html>

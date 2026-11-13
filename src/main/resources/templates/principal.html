@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Inicio')}"></head>
+<body>
+
+    <header th:replace="~{fragments/header :: encabezado}"></header>
+
+    <main class="container py-4">
+
+        <div th:replace="~{fragments/header :: mensajes}"></div>
+
+        <h1 class="h3 mb-1">Sistema de Clínica / Consultorio</h1>
+        <p class="text-muted">
+            Gestión de pacientes, médicos y turnos.
+            Hoy es <span th:text="${#temporals.format(hoy, 'dd/MM/yyyy')}">13/11/2026</span>.
+        </p>
+
+        <!-- Tarjetas con el resumen que envía InicioControlador por el Model. -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="text-muted small">Pacientes activos</div>
+                        <div class="display-6 fw-bold" th:text="${cantidadPacientes}">0</div>
+                        <a class="btn btn-sm btn-primary mt-2" th:href="@{/pacientes}">Ver pacientes</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="text-muted small">Médicos activos</div>
+                        <div class="display-6 fw-bold" th:text="${cantidadMedicos}">0</div>
+                        <a class="btn btn-sm btn-primary mt-2" th:href="@{/medicos}">Ver médicos</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="text-muted small">Turnos pendientes de confirmar</div>
+                        <div class="display-6 fw-bold" th:text="${cantidadPendientes}">0</div>
+                        <a class="btn btn-sm btn-primary mt-2" th:href="@{/turnos(estado='PENDIENTE')}">Ver pendientes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h5 mb-0">Turnos de hoy</h2>
+            <a class="btn btn-success btn-sm" th:href="@{/turnos/nuevo}">+ Asignar turno</a>
+        </div>
+
+        <div th:replace="~{fragments/turnos :: tabla(${turnosHoy}, '/')}"></div>
+    </main>
+
+    <th:block th:replace="~{fragments/header :: scripts}"></th:block>
+</body>
+</html>

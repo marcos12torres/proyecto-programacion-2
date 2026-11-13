@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${titulo})}"></head>
+<body>
+
+    <header th:replace="~{fragments/header :: encabezado}"></header>
+
+    <main class="container py-4">
+
+        <h1 class="h3 mb-3" th:text="${titulo}">Registrar paciente</h1>
+
+        <div th:replace="~{fragments/header :: mensajes}"></div>
+
+        <!-- Sirve para alta (POST /pacientes) y modificación (POST /pacientes/{id}).
+             th:object selecciona el objeto "paciente" que el controlador agregó al modelo. -->
+        <form class="card card-body shadow-sm formulario" th:action="@{${accion}}" th:object="${paciente}" method="post">
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="nombre" class="form-label">Nombre *</label>
+                    <!-- th:field vincula el campo con la propiedad "nombre". -->
+                    <input type="text" id="nombre" class="form-control" th:field="*{nombre}" required maxlength="255">
+                </div>
+                <div class="col-md-6">
+                    <label for="apellido" class="form-label">Apellido *</label>
+                    <input type="text" id="apellido" class="form-control" th:field="*{apellido}" required maxlength="255">
+                </div>
+                <div class="col-md-6">
+                    <label for="dni" class="form-label">DNI *</label>
+                    <!-- Si el DNI es 0 (paciente nuevo) se muestra vacío. -->
+                    <input type="number" id="dni" name="dni" class="form-control"
+                           th:value="*{dni != 0} ? *{dni} : ''"
+                           min="1000000" max="99999999" required placeholder="Sin puntos">
+                </div>
+                <div class="col-md-6">
+                    <label for="telefono" class="form-label">Teléfono</label>
+                    <input type="tel" id="telefono" class="form-control" th:field="*{telefono}" maxlength="20">
+                </div>
+                <div class="col-12">
+                    <label for="obraSocial" class="form-label">Obra social</label>
+                    <input type="text" id="obraSocial" class="form-control" th:field="*{obraSocial}"
+                           placeholder="Si se deja vacío se registra como Particular" maxlength="255">
+                </div>
+            </div>
+
+            <p class="small text-muted mt-3 mb-2">* Campos obligatorios</p>
+
+            <div>
+                <button class="btn btn-primary" type="submit">Guardar</button>
+                <a class="btn btn-outline-secondary" th:href="@{/pacientes}">Cancelar</a>
+            </div>
+        </form>
+    </main>
+
+    <th:block th:replace="~{fragments/header :: scripts}"></th:block>
+</body>
+</html>

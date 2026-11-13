@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Turnos')}"></head>
+<body>
+
+    <header th:replace="~{fragments/header :: encabezado}"></header>
+
+    <main class="container py-4">
+
+        <div th:replace="~{fragments/header :: mensajes}"></div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h3 mb-0">Turnos</h1>
+            <a class="btn btn-success" th:href="@{/turnos/nuevo}">+ Asignar turno</a>
+        </div>
+
+        <!-- Filtros combinables: GET /turnos?fecha=...&medicoId=...&estado=... -->
+        <form class="card card-body shadow-sm mb-3" th:action="@{/turnos}" method="get">
+            <div class="row g-2 align-items-end">
+                <div class="col-sm-6 col-md-3">
+                    <label for="fecha" class="form-label small">Fecha</label>
+                    <input type="date" id="fecha" name="fecha" class="form-control" th:value="${fecha}">
+                </div>
+                <div class="col-sm-6 col-md-4">
+                    <label for="medicoId" class="form-label small">Médico</label>
+                    <select id="medicoId" name="medicoId" class="form-select">
+                        <option value="">Todos</option>
+                        <option th:each="m : ${medicos}" th:value="${m.id}"
+                                th:text="${m.nombreCompleto} + ' (' + ${m.especialidad} + ')'"
+                                th:selected="${m.id == medicoId}">Gómez, Luis</option>
+                    </select>
+                </div>
+                <div class="col-sm-6 col-md-2">
+                    <label for="estado" class="form-label small">Estado</label>
+                    <select id="estado" name="estado" class="form-select">
+                        <option value="">Todos</option>
+                        <option th:each="e : ${estados}" th:value="${e}" th:text="${e}"
+                                th:selected="${e == estado}">PENDIENTE</option>
+                    </select>
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    <button class="btn btn-outline-primary" type="submit">Filtrar</button>
+                    <a class="btn btn-outline-secondary" th:href="@{/turnos}">Limpiar</a>
+                </div>
+            </div>
+        </form>
+
+        <div th:replace="~{fragments/turnos :: tabla(${turnos}, '/turnos')}"></div>
+    </main>
+
+    <th:block th:replace="~{fragments/header :: scripts}"></th:block>
+</body>
+</html>

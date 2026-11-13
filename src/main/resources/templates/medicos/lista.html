@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Médicos')}"></head>
+<body>
+
+    <header th:replace="~{fragments/header :: encabezado}"></header>
+
+    <main class="container py-4">
+
+        <div th:replace="~{fragments/header :: mensajes}"></div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h1 class="h3 mb-0">Médicos</h1>
+            <a class="btn btn-primary" th:href="@{/medicos/nuevo}">+ Registrar médico</a>
+        </div>
+
+        <!-- Filtro por especialidad: GET /medicos?especialidad=... -->
+        <form class="row g-2 mb-3" th:action="@{/medicos}" method="get">
+            <div class="col-sm-8 col-md-5">
+                <select name="especialidad" class="form-select">
+                    <option value="">Todas las especialidades</option>
+                    <option th:each="e : ${especialidades}" th:value="${e}" th:text="${e}"
+                            th:selected="${e == especialidad}">Cardiología</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-outline-primary" type="submit">Filtrar</button>
+                <a class="btn btn-outline-secondary" th:href="@{/medicos}">Limpiar</a>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle bg-white shadow-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>Apellido y nombre</th>
+                        <th>DNI</th>
+                        <th>Matrícula</th>
+                        <th>Especialidad</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="m : ${medicos}">
+                        <td th:text="${m.nombreCompleto}">Gómez, Luis</td>
+                        <td th:text="${m.dni}">20111222</td>
+                        <td th:text="${m.matricula}">1234</td>
+                        <td th:text="${m.especialidad}">Cardiología</td>
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-outline-primary" th:href="@{/medicos/{id}(id=${m.id})}">Ver agenda</a>
+                            <a class="btn btn-sm btn-outline-secondary" th:href="@{/medicos/{id}/editar(id=${m.id})}">Modificar</a>
+                            <form class="d-inline" method="post"
+                                  th:action="@{/medicos/{id}/eliminar(id=${m.id})}"
+                                  onsubmit="return confirm('¿Eliminar este médico? Si tiene turnos se dará de baja y se cancelarán sus turnos futuros.');">
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(medicos)}">
+                        <td colspan="5" class="text-center text-muted py-4">No se encontraron médicos.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <th:block th:replace="~{fragments/header :: scripts}"></th:block>
+</body>
+</html>

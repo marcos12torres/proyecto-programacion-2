@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${titulo})}"></head>
+<body>
+
+    <header th:replace="~{fragments/header :: encabezado}"></header>
+
+    <main class="container py-4">
+
+        <h1 class="h3 mb-3" th:text="${titulo}">Registrar médico</h1>
+
+        <div th:replace="~{fragments/header :: mensajes}"></div>
+
+        <form class="card card-body shadow-sm formulario" th:action="@{${accion}}" th:object="${medico}" method="post">
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="nombre" class="form-label">Nombre *</label>
+                    <input type="text" id="nombre" class="form-control" th:field="*{nombre}" required maxlength="255">
+                </div>
+                <div class="col-md-6">
+                    <label for="apellido" class="form-label">Apellido *</label>
+                    <input type="text" id="apellido" class="form-control" th:field="*{apellido}" required maxlength="255">
+                </div>
+                <div class="col-md-6">
+                    <label for="dni" class="form-label">DNI *</label>
+                    <input type="number" id="dni" name="dni" class="form-control"
+                           th:value="*{dni != 0} ? *{dni} : ''"
+                           min="1000000" max="99999999" required placeholder="Sin puntos">
+                </div>
+                <div class="col-md-6">
+                    <label for="matricula" class="form-label">Matrícula *</label>
+                    <input type="number" id="matricula" name="matricula" class="form-control"
+                           th:value="*{matricula != 0} ? *{matricula} : ''"
+                           min="1" max="999999" required>
+                </div>
+                <div class="col-12">
+                    <label for="especialidad" class="form-label">Especialidad *</label>
+                    <!-- datalist sugiere las especialidades ya cargadas, pero permite escribir una nueva. -->
+                    <input type="text" id="especialidad" class="form-control" th:field="*{especialidad}"
+                           list="lista-especialidades" required maxlength="255">
+                    <datalist id="lista-especialidades">
+                        <option th:each="e : ${especialidades}" th:value="${e}"></option>
+                    </datalist>
+                </div>
+            </div>
+
+            <p class="small text-muted mt-3 mb-2">* Campos obligatorios</p>
+
+            <div>
+                <button class="btn btn-primary" type="submit">Guardar</button>
+                <a class="btn btn-outline-secondary" th:href="@{/medicos}">Cancelar</a>
+            </div>
+        </form>
+    </main>
+
+    <th:block th:replace="~{fragments/header :: scripts}"></th:block>
+</body>
+</html>

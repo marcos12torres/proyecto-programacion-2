@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Agenda del médico')}"></head>
+<body>
+
+    <header th:replace="~{fragments/header :: encabezado}"></header>
+
+    <main class="container py-4">
+
+        <div th:replace="~{fragments/header :: mensajes}"></div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+                    <div>
+                        <h1 class="h3 mb-1">
+                            Dr./Dra. <span th:text="${medico.nombreCompleto}">Gómez, Luis</span>
+                            <span th:unless="${medico.activo}" class="badge text-bg-secondary align-middle">Dado de baja</span>
+                        </h1>
+                        <div class="text-muted">
+                            <span th:text="${medico.especialidad}">Cardiología</span> ·
+                            Matrícula <span th:text="${medico.matricula}">1234</span> ·
+                            DNI <span th:text="${medico.dni}">20111222</span>
+                        </div>
+                    </div>
+                    <div th:if="${medico.activo}" class="text-nowrap">
+                        <a class="btn btn-success" th:href="@{/turnos/nuevo(medicoId=${medico.id})}">+ Asignar turno</a>
+                        <a class="btn btn-outline-secondary" th:href="@{/medicos/{id}/editar(id=${medico.id})}">Modificar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Relación uno a muchos: agenda de turnos del médico. -->
+        <h2 class="h5">Agenda de turnos (<span th:text="${#lists.size(turnos)}">0</span>)</h2>
+        <div th:replace="~{fragments/turnos :: tabla(${turnos}, '/medicos/' + ${medico.id})}"></div>
+
+        <a class="btn btn-outline-secondary" th:href="@{/medicos}">← Volver al listado</a>
+    </main>
+
+    <th:block th:replace="~{fragments/header :: scripts}"></th:block>
+</body>
+</html>

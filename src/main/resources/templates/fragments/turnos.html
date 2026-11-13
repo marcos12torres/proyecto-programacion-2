@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!--
+    Tabla de turnos reutilizable (listado general, ficha del paciente y ficha del médico).
+    Parámetros:
+      turnos -> lista de turnos a mostrar
+      volver -> URL a la que se regresa después de confirmar o cancelar
+-->
+<div th:fragment="tabla(turnos, volver)" class="table-responsive">
+    <table class="table table-hover align-middle bg-white shadow-sm">
+        <thead class="table-light">
+            <tr>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Paciente</th>
+                <th>Médico</th>
+                <th>Tipo</th>
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th class="text-end">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="t : ${turnos}" th:classappend="${t.cancelado} ? 'text-muted'">
+                <!-- #temporals da formato a LocalDate y LocalTime. -->
+                <td th:text="${#temporals.format(t.fecha, 'dd/MM/yyyy')}">20/11/2026</td>
+                <td th:text="${#temporals.format(t.hora, 'HH:mm')}">09:00</td>
+                <td>
+                    <a th:href="@{/pacientes/{id}(id=${t.paciente.id})}"
+                       th:text="${t.paciente.nombreCompleto}">Pérez, Ana</a>
+                </td>
+                <td>
+                    <a th:href="@{/medicos/{id}(id=${t.medico.id})}"
+                       th:text="${t.medico.nombreCompleto}">Gómez, Luis</a>
+                    <div class="small text-muted" th:text="${t.medico.especialidad}">Clínica</div>
+                </td>
+                <td th:text="${t.tipo.descripcion}">Consulta</td>
+                <td th:text="${t.descripcion} ?: '-'">Control</td>
+                <td>
+                    <span class="badge"
+                          th:classappend="${t.estado.name() == 'PENDIENTE'} ? 'text-bg-warning'
+                                        : (${t.estado.name() == 'CONFIRMADO'} ? 'text-bg-success' : 'text-bg-secondary')"
+                          th:text="${t.estado}">PENDIENTE</span>
+                </td>
+                <td class="text-end text-nowrap">
+                    <!-- Solo un turno PENDIENTE se puede confirmar. -->
+                    <form th:if="${t.estado.name() == 'PENDIENTE'}" class="d-inline" method="post"
+                          th:action="@{/turnos/{id}/confirmar(id=${t.id})}">
+                        <input type="hidden" name="volver" th:value="${volver}">
+                        <button class="btn btn-sm btn-success" type="submit">Confirmar</button>
+                    </form>
+                    <form th:unless="${t.cancelado}" class="d-inline" method="post"
+                          th:action="@{/turnos/{id}/cancelar(id=${t.id})}"
+                          onsubmit="return confirm('¿Cancelar este turno?');">
+                        <input type="hidden" name="volver" th:value="${volver}">
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Cancelar</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(turnos)}">
+                <td colspan="8" class="text-center text-muted py-4">No hay turnos para mostrar.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
