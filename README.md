@@ -8,7 +8,8 @@ Es la evolución del proyecto Swing del primer cuatrimestre
 reescrita con **Spring Boot + MVC + Thymeleaf + Bootstrap** y persistencia en **MySQL con DataNucleus JDO**.
 
 ## 👨‍💻 Integrantes
-
+- Romina Davila
+- Valentina adad
 - Marcos Torres
 - Federico Matus
 
